@@ -389,40 +389,62 @@ Write-Host "✓ Complete! Your Tonie file is ready: tonie_output.mp3"</code>
     
     <script>
         function copyToClipboard(button, text) {
-            // Create a temporary textarea element
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            
-            // Select and copy the text
-            textarea.select();
-            textarea.setSelectionRange(0, 99999); // For mobile devices
-            
-            try {
-                document.execCommand('copy');
+            // Use modern Clipboard API if available, fallback to execCommand
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    // Visual feedback
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    button.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    button.textContent = 'Error';
+                    
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                    }, 2000);
+                });
+            } else {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
                 
-                // Visual feedback
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
-                button.classList.add('copied');
+                // Select and copy the text
+                textarea.select();
+                textarea.setSelectionRange(0, 99999); // For mobile devices
                 
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.classList.remove('copied');
-                }, 2000);
-            } catch (err) {
-                console.error('Failed to copy text: ', err);
-                button.textContent = 'Error';
+                try {
+                    document.execCommand('copy');
+                    
+                    // Visual feedback
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    button.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    button.textContent = 'Error';
+                    
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                    }, 2000);
+                }
                 
-                setTimeout(() => {
-                    button.textContent = 'Copy';
-                }, 2000);
+                // Clean up
+                document.body.removeChild(textarea);
             }
-            
-            // Clean up
-            document.body.removeChild(textarea);
         }
     </script>
 </body>

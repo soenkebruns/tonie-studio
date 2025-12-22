@@ -91,8 +91,9 @@ def embed_cover_art(mp3_file, cover_art_file):
     # Add ID3 tag if it doesn't exist
     try:
         audio.add_tags()
-    except Exception:
-        pass  # Tags already exist
+    except Exception as e:
+        # Tags already exist or other error - continue anyway
+        pass
     
     # Read cover art file
     with open(cover_art_file, 'rb') as img:
