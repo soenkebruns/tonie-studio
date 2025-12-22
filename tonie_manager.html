@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tonie Workflow Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .workflow-steps {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .step {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .step-description {
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .command-section {
+            margin-top: 20px;
+        }
+        
+        .command-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .command-box {
+            position: relative;
+            background: #1a202c;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        
+        .command-box code {
+            display: block;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #3182ce;
+        }
+        
+        .copy-btn:active {
+            background: #2c5282;
+        }
+        
+        .copy-btn.copied {
+            background: #48bb78;
+        }
+        
+        .notes {
+            background: #fef5e7;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+        
+        .notes h4 {
+            color: #d68910;
+            margin-bottom: 8px;
+        }
+        
+        .notes ul {
+            margin-left: 20px;
+            color: #7d6608;
+        }
+        
+        .notes li {
+            margin-bottom: 5px;
+        }
+        
+        .prerequisites {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .prerequisites h4 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+        
+        .prerequisites code {
+            background: #c8e6c9;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Tonie Workflow Dashboard</h1>
+            <p>Two-step process for merging MP3 files and converting to Tonie format</p>
+        </header>
+        
+        <div class="workflow-steps">
+            <!-- Step 1: Python Merging -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Merge MP3 Files with Python</div>
+                </div>
+                
+                <div class="step-description">
+                    Merge multiple MP3 files into a single file and optionally embed cover artwork using the Python script.
+                </div>
+                
+                <div class="prerequisites">
+                    <h4>Prerequisites:</h4>
+                    Install required Python packages:
+                    <div class="command-box" style="margin-top: 10px;">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'pip install pydub mutagen')">Copy</button>
+                        <code>pip install pydub mutagen</code>
+                    </div>
+                    Note: You'll also need ffmpeg installed on your system for pydub to work.
+                </div>
+                
+                <div class="command-section">
+                    <span class="command-label">Basic merge command:</span>
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'python merge_mp3.py file1.mp3 file2.mp3 file3.mp3 -o output.mp3')">Copy</button>
+                        <code>python merge_mp3.py file1.mp3 file2.mp3 file3.mp3 -o output.mp3</code>
+                    </div>
+                </div>
+                
+                <div class="command-section">
+                    <span class="command-label">Merge with cover art:</span>
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'python merge_mp3.py *.mp3 -o merged.mp3 -c cover.jpg')">Copy</button>
+                        <code>python merge_mp3.py *.mp3 -o merged.mp3 -c cover.jpg</code>
+                    </div>
+                </div>
+                
+                <div class="command-section">
+                    <span class="command-label">Merge all MP3s in a directory:</span>
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'python merge_mp3.py /path/to/files/*.mp3 -o result.mp3 -c artwork.png')">Copy</button>
+                        <code>python merge_mp3.py /path/to/files/*.mp3 -o result.mp3 -c artwork.png</code>
+                    </div>
+                </div>
+                
+                <div class="notes">
+                    <h4>Notes:</h4>
+                    <ul>
+                        <li>Input files should be MP3 format</li>
+                        <li>Cover art can be JPEG or PNG format</li>
+                        <li>The script will automatically add .mp3 extension if missing from output filename</li>
+                        <li>Files are merged in the order specified</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Step 2: Docker Conversion -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Convert to Tonie Format with Docker</div>
+                </div>
+                
+                <div class="step-description">
+                    Convert the merged MP3 file to Tonie-compatible format using the tonie-podcast-sync Docker container.
+                </div>
+                
+                <div class="prerequisites">
+                    <h4>Prerequisites:</h4>
+                    Docker must be installed and running on your system.
+                </div>
+                
+                <div class="command-section">
+                    <span class="command-label">Pull the Docker image:</span>
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'docker pull ghcr.io/soenkebruns/tonie-podcast-sync:main')">Copy</button>
+                        <code>docker pull ghcr.io/soenkebruns/tonie-podcast-sync:main</code>
+                    </div>
+                </div>
+                
+                <div class="command-section">
+                    <span class="command-label">Convert merged MP3 to Tonie format:</span>
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'docker run --rm -v $(pwd):/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3')">Copy</button>
+                        <code>docker run --rm -v $(pwd):/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3</code>
+                    </div>
+                </div>
+                
+                <div class="command-section">
+                    <span class="command-label">For Windows (PowerShell):</span>
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'docker run --rm -v ${PWD}:/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3')">Copy</button>
+                        <code>docker run --rm -v ${PWD}:/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3</code>
+                    </div>
+                </div>
+                
+                <div class="command-section">
+                    <span class="command-label">For Windows (CMD):</span>
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard(this, 'docker run --rm -v %cd%:/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3')">Copy</button>
+                        <code>docker run --rm -v %cd%:/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3</code>
+                    </div>
+                </div>
+                
+                <div class="notes">
+                    <h4>Notes:</h4>
+                    <ul>
+                        <li>The Docker command mounts your current directory as <code>/data</code> in the container</li>
+                        <li>Input and output files should be in the current directory</li>
+                        <li>Tonie format specifications: 48kHz sample rate, 2 channels (stereo), 128k bitrate</li>
+                        <li>Replace <code>merged.mp3</code> with your actual merged file name</li>
+                        <li>Replace <code>tonie_output.mp3</code> with your desired output name</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Complete Workflow -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">✓</div>
+                    <div class="step-title">Complete Workflow Script</div>
+                </div>
+                
+                <div class="step-description">
+                    Here's a complete script that combines both steps for easy execution.
+                </div>
+                
+                <div class="command-section">
+                    <span class="command-label">Bash script (Linux/Mac):</span>
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard(this, `#!/bin/bash\n# Tonie Workflow - Complete Script\n\n# Step 1: Merge MP3 files\necho \"Step 1: Merging MP3 files...\"\npython merge_mp3.py *.mp3 -o merged.mp3 -c cover.jpg\n\n# Step 2: Convert to Tonie format\necho \"Step 2: Converting to Tonie format...\"\ndocker run --rm -v $(pwd):/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3\n\necho \"✓ Complete! Your Tonie file is ready: tonie_output.mp3\"`)">Copy</button>
+                        <code>#!/bin/bash
+# Tonie Workflow - Complete Script
+
+# Step 1: Merge MP3 files
+echo "Step 1: Merging MP3 files..."
+python merge_mp3.py *.mp3 -o merged.mp3 -c cover.jpg
+
+# Step 2: Convert to Tonie format
+echo "Step 2: Converting to Tonie format..."
+docker run --rm -v $(pwd):/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3
+
+echo "✓ Complete! Your Tonie file is ready: tonie_output.mp3"</code>
+                    </div>
+                </div>
+                
+                <div class="command-section">
+                    <span class="command-label">PowerShell script (Windows):</span>
+                    <div class="command-box">
+                        <button class="copy-btn" onclick="copyToClipboard(this, `# Tonie Workflow - Complete Script\n\n# Step 1: Merge MP3 files\nWrite-Host \"Step 1: Merging MP3 files...\"\npython merge_mp3.py *.mp3 -o merged.mp3 -c cover.jpg\n\n# Step 2: Convert to Tonie format\nWrite-Host \"Step 2: Converting to Tonie format...\"\ndocker run --rm -v \${PWD}:/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3\n\nWrite-Host \"✓ Complete! Your Tonie file is ready: tonie_output.mp3\"`)">Copy</button>
+                        <code># Tonie Workflow - Complete Script
+
+# Step 1: Merge MP3 files
+Write-Host "Step 1: Merging MP3 files..."
+python merge_mp3.py *.mp3 -o merged.mp3 -c cover.jpg
+
+# Step 2: Convert to Tonie format
+Write-Host "Step 2: Converting to Tonie format..."
+docker run --rm -v ${PWD}:/data ghcr.io/soenkebruns/tonie-podcast-sync:main ffmpeg -i /data/merged.mp3 -ar 48000 -ac 2 -b:a 128k /data/tonie_output.mp3
+
+Write-Host "✓ Complete! Your Tonie file is ready: tonie_output.mp3"</code>
+                    </div>
+                </div>
+                
+                <div class="notes">
+                    <h4>Usage:</h4>
+                    <ul>
+                        <li>Save the script as <code>tonie_workflow.sh</code> (Bash) or <code>tonie_workflow.ps1</code> (PowerShell)</li>
+                        <li>Make it executable (Bash): <code>chmod +x tonie_workflow.sh</code></li>
+                        <li>Run it in a directory containing your MP3 files and cover image</li>
+                        <li>The final Tonie-ready file will be <code>tonie_output.mp3</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Tonie Studio - Simplifying audio preparation for Tonie devices</p>
+        </footer>
+    </div>
+    
+    <script>
+        function copyToClipboard(button, text) {
+            // Create a temporary textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            
+            // Select and copy the text
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                
+                // Visual feedback
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            }
+            
+            // Clean up
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
